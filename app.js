@@ -2,7 +2,7 @@ const express = require('express')
 const passport = require('passport');
 const BearerStrategy = require('passport-http-bearer').Strategy;
 const app = express()
-const port = 3000
+const port = 3001
 
 mock_linode_list = JSON.stringify(
     {
@@ -68,14 +68,16 @@ passport.use(new BearerStrategy(
     }
 ));
 
-app.get(
-    '/dst/api/v1/list',
+const router = express.Router();
+router.get(
+    '/list',
     passport.authenticate('bearer', { session: false }),
     (req, res) => {
         res.setHeader('Content-Type', 'application/json');
         res.send(mock_linode_list)
     }
 );
+app.use('/dst/api/v1', router);
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
