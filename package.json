@@ -1,0 +1,16 @@
+{
+  "name": "dst-server-api",
+  "version": "1.0.0",
+  "description": "managing dst server on linode",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "me@kmtu.info",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "passport": "^0.4.1",
+    "passport-http-bearer": "^1.0.1"
+  }
+}
