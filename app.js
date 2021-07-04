@@ -7,7 +7,9 @@ const app = express()
 const port = process.env.DST_API_PORT || 3000
 const linodeApiKey = process.env.LINODE_API_KEY;
 const dstApiKey = process.env.DST_API_KEY;
-const linodeApiUrl = 'api.linode.com/v4/linode'
+const {setToken, getLinodes} = require('@linode/api-v4');
+
+setToken(linodeApiKey);
 
 mock_linode_list = JSON.stringify(
     {
@@ -75,12 +77,13 @@ const router = express.Router();
 router.get(
     '/list',
     passport.authenticate('bearer', { session: false }),
-    (req, res) => {
-        res.setHeader('Content-Type', 'application/json');
-        res.send(mock_linode_list)
+    async (req, res) => {
+        const ret = await getLinodes({page: 2});
+        res.json(ret);
     }
 );
 app.use('/dst/api/v1', router);
+
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
