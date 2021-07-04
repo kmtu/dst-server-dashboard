@@ -1,8 +1,13 @@
+require('dotenv').config()
+
 const express = require('express')
 const passport = require('passport');
 const BearerStrategy = require('passport-http-bearer').Strategy;
 const app = express()
-const port = 3001
+const port = process.env.DST_API_PORT || 3000
+const linodeApiKey = process.env.LINODE_API_KEY;
+const dstApiKey = process.env.DST_API_KEY;
+const linodeApiUrl = 'api.linode.com/v4/linode'
 
 mock_linode_list = JSON.stringify(
     {
@@ -57,11 +62,9 @@ mock_linode_list = JSON.stringify(
     }
 ) 
 
-apiToken = 'apiToken';
-
 passport.use(new BearerStrategy(
     function(token, done) {
-        if (token !== apiToken) {
+        if (token !== dstApiKey) {
             return done(null, false, {message: 'Incorrect token'});
         }
         return done(null, true);
