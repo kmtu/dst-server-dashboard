@@ -3,11 +3,14 @@ require('dotenv').config()
 const express = require('express')
 const passport = require('passport');
 const BearerStrategy = require('passport-http-bearer').Strategy;
+const {setToken, getLinodes} = require('@linode/api-v4');
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
+
 const app = express()
 const port = process.env.DST_API_PORT || 3000
 const linodeApiKey = process.env.LINODE_API_KEY;
 const dstApiKey = process.env.DST_API_KEY;
-const {setToken, getLinodes} = require('@linode/api-v4');
 
 setToken(linodeApiKey);
 
@@ -81,6 +84,22 @@ router.get(
         //res.json(mock_linode_list);
     }
 );
+
+router.get(
+    '/test',
+    passport.authenticate('bearer', { session: false }),
+    async (req, res) => {
+        const {stdout, stderr} = await exec('ls');
+        console.log('stdout:', stdout);
+        console.log('stderr:', stderr);
+        res.json({
+            stdout,
+            stderr
+        });
+    }
+);
+
+
 app.use('/dst/api/v1', router);
 
 
